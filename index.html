@@ -1,1 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microservices with Spring Boot — Full Lecture Notes</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
 
+<div class="hero">
+  <div class="hero-tag">🎓 University Lecture Notes</div>
+  <h1>Microservices Architecture<br>with Spring Boot</h1>
+  <p>A complete, beginner-friendly deep-dive into every concept — from monoliths to REST APIs, JPA, and full CRUD operations.</p>
+  <div class="hero-meta">
+    <span>📚 Prof. Chemlal Yman</span>
+    <span>🗂️ 7 Parts Covered</span>
+    <span>☕ Java 17 · Spring Boot 3.x</span>
+    <span>🔧 JPA · REST · Postman</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>📋 Table of Contents</h2>
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-item"><span class="toc-num">01</span>What is a Monolith?</a>
+    <a href="#ch2" class="toc-item"><span class="toc-num">02</span>What are Microservices?</a>
+    <a href="#ch3" class="toc-item"><span class="toc-num">03</span>Spring Boot Framework</a>
+    <a href="#ch4" class="toc-item"><span class="toc-num">04</span>Your First Microservice</a>
+    <a href="#ch5" class="toc-item"><span class="toc-num">05</span>REST APIs & HTTP Verbs</a>
+    <a href="#ch6" class="toc-item"><span class="toc-num">06</span>Controllers & JSON</a>
+    <a href="#ch7" class="toc-item"><span class="toc-num">07</span>The DAO Pattern</a>
+    <a href="#ch8" class="toc-item"><span class="toc-num">08</span>Testing with Postman</a>
+    <a href="#ch9" class="toc-item"><span class="toc-num">09</span>JPA & Data Persistence</a>
+    <a href="#ch10" class="toc-item"><span class="toc-num">10</span>Spring Data JPA</a>
+    <a href="#ch11" class="toc-item"><span class="toc-num">11</span>3-Layer Architecture</a>
+    <a href="#ch12" class="toc-item"><span class="toc-num">12</span>Error Handling & Validation</a>
+    <a href="#exam" class="toc-item"><span class="toc-num">✏️</span>Exam Practice</a>
+  </div>
+</div>
+
+<!-- ======================= CHAPTER 1 ======================= -->
+<div class="chapter" id="ch1">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 01</span>
+    <h2>Monolithic Architecture — The Traditional Way</h2>
+  </div>
+
+  <h3>🏗️ What is a Monolithic Application?</h3>
+  <p>Imagine you are building a huge building — but instead of having separate rooms, you build everything as <strong>one giant room</strong>. The kitchen, bedroom, bathroom, and office are all the same open space with no walls. That's a monolith.</p>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Simple Definition</strong>
+      A monolithic application is ONE single program where ALL the features (user management, products, payments, etc.) live together in the same codebase, are compiled together, and run on the same server.
+    </div>
+  </div>
+
+  <h3>🔍 How It Works — The 4 Components</h3>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(88,166,255,0.15)">🌐</div>
+      <h4>1. Clients (Browsers / Mobile Apps)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>These are the users who send requests to your application. Whether it's a browser, a mobile app, or another API — they all send requests to <strong>one single address</strong>.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(210,168,255,0.15)">🖥️</div>
+      <h4>2. The Monolithic Server (The Giant Brain)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>All code is here: the Router, Feature A (User Management), Feature B (Product Catalog), Feature C (Payment). They ALL share the same memory, processor, and are all deployed together.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(255,166,87,0.15)">🔀</div>
+      <h4>3. The Router</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>The router receives incoming requests and directs them to the correct feature inside the application. Think of it as a receptionist who decides which department handles your request.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(63,185,80,0.15)">🗄️</div>
+      <h4>4. One Shared Database</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>All features share <strong>the same single database</strong>. Feature A, B, and C all read and write to the same place. This creates tight coupling between parts of the application.</p>
+    </div>
+  </div>
+
+  <h3>✅ Advantages of Monolith</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Advantage</th><th>Why it helps</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Simple to develop at first</strong></td><td>You just write one project — no network calls between services</td></tr>
+        <tr><td><strong>Easy to deploy</strong></td><td>One file (a .jar or .war) and you're done</td></tr>
+        <tr><td><strong>Simpler testing</strong></td><td>Everything is in one place so you can run all tests together</td></tr>
+        <tr><td><strong>Fast internal calls</strong></td><td>Feature A calling Feature B happens in RAM (no network delay)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>❌ Disadvantages — Why Monoliths Break Down</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Problem</th><th>Real-world impact</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Hard to scale (Scalability)</strong></td><td class="td-bad">If Feature A gets heavy traffic, you must duplicate the ENTIRE app — even Features B and C that don't need it. Wasteful!</td></tr>
+        <tr><td><strong>"Spaghetti code"</strong></td><td class="td-bad">Over time the codebase becomes huge and tangled. Changing one feature can accidentally break another.</td></tr>
+        <tr><td><strong>Risky deployments</strong></td><td class="td-bad">Changing ONE line of code in Feature C requires restarting the ENTIRE application — causing downtime for everyone.</td></tr>
+        <tr><td><strong>Technology lock-in</strong></td><td class="td-bad">You're stuck with ONE programming language for everything. Can't write Feature A in Java and Feature B in Python.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📖 Amazon's Real Story</h3>
+  <div class="callout warning">
+    <div class="callout-icon">🏪</div>
+    <div class="callout-content">
+      <strong>Amazon Started as a Monolith</strong>
+      Amazon's original website was one giant monolithic application. As their team grew, developers spent entire DAYS or WEEKS just merging code changes. Frequent conflicts. Impossible to scale individual features. The solution? They broke their monolith into <strong>microservices</strong> — and the rest is history.
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 1</h4>
+    <ul>
+      <li>A monolith = everything in one single deployable unit</li>
+      <li>Great for small projects, terrible for large growing systems</li>
+      <li>The 3 big problems: hard to scale, hard to maintain, risky to deploy</li>
+      <li>Teams are interdependent — slow everyone down</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 2 ======================= -->
+<div class="chapter" id="ch2">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 02</span>
+    <h2>Microservices — The Modern Solution</h2>
+  </div>
+
+  <h3>🔬 What is a Microservice?</h3>
+  <div class="callout success">
+    <div class="callout-icon">📌</div>
+    <div class="callout-content">
+      <strong>Official Definition</strong>
+      An architecture where the application is broken into a collection of small, independent services, each running its own process and communicating via lightweight mechanisms (usually HTTP/REST).
+    </div>
+  </div>
+
+  <p>Instead of one giant room, now you have <strong>separate apartments</strong>. Each apartment (service) has its own entrance, its own furniture, and its own rules. If one apartment catches fire, the others are not affected.</p>
+
+  <h3>🧬 Anatomy of a Single Microservice</h3>
+  <p>Each microservice is completely autonomous. It has:</p>
+  <ul>
+    <li><strong>Its own business logic</strong> — only handles one domain (e.g., only products)</li>
+    <li><strong>Its own libraries</strong> — independent dependencies</li>
+    <li><strong>Its own web server</strong> — (e.g., embedded Tomcat, Jetty)</li>
+    <li><strong>Its own database</strong> — this is the "Database per Service" golden rule</li>
+    <li><strong>Often packaged in Docker</strong> — containerized for easy deployment</li>
+  </ul>
+
+  <div class="callout danger">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-content">
+      <strong>The Golden Rule — Database per Service</strong>
+      Each microservice MUST have its own private database. Service A must NEVER directly access the database of Service B. They can only communicate via their APIs. This is what makes them truly independent.
+    </div>
+  </div>
+
+  <h3>🔑 The 3 Core Principles</h3>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(88,166,255,0.15)">🔗</div>
+      <h4>Loose Coupling (Faible couplage)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Simple Definition:</strong> Services know as little as possible about each other.</p>
+      <p><strong>Real-life analogy:</strong> You can change a lightbulb without knowing how the entire electrical system of the building works.</p>
+      <p><strong>In practice:</strong> The Payment Service doesn't care how the User Service stores user data — it just calls the User API.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(63,185,80,0.15)">🎯</div>
+      <h4>High Cohesion (Forte cohésion)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Simple Definition:</strong> All code related to one topic stays together.</p>
+      <p><strong>Real-life analogy:</strong> All ingredients for a pizza are in the pizza section of a recipe book, not scattered across all chapters.</p>
+      <p><strong>In practice:</strong> All billing logic is in the Billing Service. Not split between three different services.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(255,166,87,0.15)">🚀</div>
+      <h4>Independent Deployment</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Simple Definition:</strong> I can update Service A without restarting or affecting Service B.</p>
+      <p><strong>Real-life analogy:</strong> Updating the WiFi password doesn't require turning off the entire building's electricity.</p>
+    </div>
+  </div>
+
+  <h3>📊 Monolith vs. Microservices — Full Comparison</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Monolith</th><th>Microservices</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Simplicity</strong></td><td>Simple at start, complex later</td><td>Complex infrastructure from day 1</td></tr>
+        <tr><td><strong>Language</strong></td><td>One language for everything</td><td class="td-good">Each service can use its own language (Polyglot)</td></tr>
+        <tr><td><strong>Scaling</strong></td><td>Vertical (buy a bigger server)</td><td class="td-good">Horizontal (duplicate only the needed service)</td></tr>
+        <tr><td><strong>Failure Impact</strong></td><td class="td-bad">One infinite loop crashes the entire app</td><td class="td-good">A failure is isolated to one service</td></tr>
+        <tr><td><strong>Deployment</strong></td><td class="td-bad">Full restart needed for any change</td><td class="td-good">Deploy one service at a time</td></tr>
+        <tr><td><strong>Team Structure</strong></td><td>Teams depend on each other</td><td class="td-good">Each team owns one service independently</td></tr>
+        <tr><td><strong>Database</strong></td><td>One shared database</td><td class="td-good">Database per service</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-icon">🕷️</div>
+    <div class="callout-content">
+      <strong>TRAP: The "Distributed Monolith"</strong>
+      If Service A always calls Service B, which calls Service C, and if C fails, everything fails — you have NOT gained the benefits of microservices. You just have a slow, complex monolith. The golden rule: <strong>minimize synchronous calls between services</strong>.
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 2</h4>
+    <ul>
+      <li>Microservices = many small, independent, autonomous services</li>
+      <li>Each service has its OWN database — never share databases!</li>
+      <li>3 core principles: Loose Coupling, High Cohesion, Independent Deployment</li>
+      <li>Microservices are great for large teams and large applications</li>
+      <li>Avoid the "distributed monolith" trap — don't chain services synchronously</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 3 ======================= -->
+<div class="chapter" id="ch3">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 03</span>
+    <h2>Spring Boot — The Microservice Framework</h2>
+  </div>
+
+  <h3>🤔 What is Spring Boot?</h3>
+  <div class="callout info">
+    <div class="callout-icon">🌱</div>
+    <div class="callout-content">
+      <strong>Simple Definition</strong>
+      Spring Boot is a framework (a pre-built toolkit) that makes it very easy to create stand-alone, production-ready Java applications. It packages your application as an executable JAR file — no need to install a separate server!
+    </div>
+  </div>
+
+  <h3>😩 The Problem Before Spring Boot</h3>
+  <p>In old-school Spring/Java EE, building a simple "Hello World" web application required:</p>
+  <ul>
+    <li>Manually installing a server (Tomcat, Glassfish) on your machine</li>
+    <li>Writing multiple XML configuration files (<code>web.xml</code>, <code>persistence.xml</code>)</li>
+    <li>Spending days just setting up "plumbing" before writing any real code</li>
+    <li>XML errors only discovered at runtime — not during compilation</li>
+  </ul>
+
+  <h3>✨ Spring Boot's 3 Major Promises</h3>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(88,166,255,0.15)">⚙️</div>
+      <h4>Promise 1: Auto-Configuration</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>Spring Boot <strong>detects what libraries you've added</strong> and automatically configures them for you.</p>
+      <p><strong>Example:</strong> You add the H2 database library → Spring Boot automatically creates a DataSource connection for you. Zero lines of configuration code!</p>
+      <p>This works via the <code>@EnableAutoConfiguration</code> annotation — it scans your class path and says "I see H2! The user probably wants a database. Let me set it up."</p>
+      <p><strong>Priority rule:</strong> Your own configuration always overrides Spring Boot's automatic one.</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(63,185,80,0.15)">📦</div>
+      <h4>Promise 2: Autonomous Applications (The Fat JAR)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Before Spring Boot:</strong> You generated a <code>.war</code> file and dropped it into a running Tomcat server. The app had to go to the server.</p>
+      <p><strong>With Spring Boot:</strong> The server comes inside the app! Spring Boot bundles your code + all dependencies + an embedded Tomcat server into ONE executable JAR file.</p>
+      <p>To run your entire app: <code>java -jar myapp.jar</code> — that's it!</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(210,168,255,0.15)">📋</div>
+      <h4>Promise 3: Starter Dependencies</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>Instead of adding 30 individual libraries one by one, Spring Boot gives you <strong>Starters</strong> — pre-packaged bundles for common tasks.</p>
+      <p><strong>One line in pom.xml = ~30 compatible libraries installed automatically:</strong></p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">xml</span><span class="code-title">pom.xml — Adding one starter</span></div>
+    <pre>&lt;<span class="kw">dependency</span>&gt;
+  &lt;<span class="kw">groupId</span>&gt;org.springframework.boot&lt;/<span class="kw">groupId</span>&gt;
+  &lt;<span class="kw">artifactId</span>&gt;spring-boot-starter-web&lt;/<span class="kw">artifactId</span>&gt;
+  <span class="cmt">&lt;!-- This ONE line installs: Tomcat, Jackson (JSON), Spring MVC, and more! --&gt;</span>
+&lt;/<span class="kw">dependency</span>&gt;</pre>
+  </div>
+
+  <h3>📁 Understanding pom.xml — The Project's Identity Card</h3>
+  <p><code>pom.xml</code> (Project Object Model) is Maven's configuration file at the root of your project. Think of it as your project's birth certificate + shopping list + build recipe.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Section</th><th>What it Does</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>GAV Identity</strong></td><td>Identifies your project uniquely in the world</td><td><code>groupId: com.ecommerce</code><br><code>artifactId: microcommerce</code></td></tr>
+        <tr><td><strong>Parent Inheritance</strong></td><td>Inherits Spring Boot's version management — no version conflicts!</td><td><code>spring-boot-starter-parent</code></td></tr>
+        <tr><td><strong>Dependencies</strong></td><td>Libraries your project needs</td><td><code>spring-boot-starter-web</code></td></tr>
+        <tr><td><strong>Plugin</strong></td><td>Builds the Fat JAR and enables <code>mvn spring-boot:run</code></td><td><code>spring-boot-maven-plugin</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🎯 Essential Starters to Know</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Starter Name</th><th>What it gives you</th></tr></thead>
+      <tbody>
+        <tr><td><code>spring-boot-starter-web</code></td><td>REST APIs, Spring MVC, embedded Tomcat</td></tr>
+        <tr><td><code>spring-boot-starter-data-jpa</code></td><td>Database access with Hibernate/JPA</td></tr>
+        <tr><td><code>spring-boot-starter-test</code></td><td>Unit testing (JUnit, Mockito)</td></tr>
+        <tr><td><code>spring-boot-starter-validation</code></td><td>Data validation annotations (@NotNull, @Size)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔑 The @SpringBootApplication Annotation</h3>
+  <p>This is the most important annotation in your project. It's actually a shortcut for 3 annotations combined:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">MicrocommerceApplication.java</span></div>
+    <pre><span class="ann">@SpringBootApplication</span>  <span class="cmt">// = the 3 annotations below combined</span>
+<span class="cmt">// @Configuration         → This class can define Beans (config objects)</span>
+<span class="cmt">// @EnableAutoConfiguration → Auto-configure everything based on classpath</span>
+<span class="cmt">// @ComponentScan         → Scan packages to find Spring components</span>
+<span class="kw">public class</span> <span class="cls">MicrocommerceApplication</span> {
+
+  <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+    SpringApplication.<span class="fn">run</span>(<span class="cls">MicrocommerceApplication</span>.<span class="kw">class</span>, args);
+    <span class="cmt">// This one line starts your ENTIRE web server!</span>
+  }
+}</pre>
+  </div>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 3</h4>
+    <ul>
+      <li>Spring Boot = Spring Framework + Auto-config + Embedded Server</li>
+      <li>No more XML files — annotations replace configuration</li>
+      <li>Fat JAR = your code + Tomcat + all libraries in ONE file</li>
+      <li>Starters = bundled groups of compatible dependencies</li>
+      <li><code>@SpringBootApplication</code> = the entry point annotation (3-in-1)</li>
+      <li><code>pom.xml</code> = your project's identity + dependency list</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 4 ======================= -->
+<div class="chapter" id="ch4">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 04</span>
+    <h2>Creating Your First Microservice — Project Setup</h2>
+  </div>
+
+  <h3>🧰 Prerequisites</h3>
+  <ul>
+    <li><strong>JDK 17+</strong> — Java Development Kit (LTS version). Verify with <code>java -version</code></li>
+    <li><strong>IntelliJ IDEA Community</strong> — The industry standard IDE for Spring Boot</li>
+    <li><strong>Postman</strong> — Tool for testing APIs without a browser</li>
+  </ul>
+
+  <h3>🚀 The Project: "Mini E-Commerce"</h3>
+  <p>The course builds a real mini e-commerce system step by step. The full vision has 3 microservices:</p>
+  <ul>
+    <li>🛍️ <strong>Products Service</strong> — manages the product catalog (what we build)</li>
+    <li>📦 <strong>Orders Service</strong> — manages customer orders</li>
+    <li>💳 <strong>Payment Service</strong> — handles payments (optional)</li>
+  </ul>
+
+  <h3>⚙️ Initializing with Spring Initializr</h3>
+  <p>Go to <strong>start.spring.io</strong> — it's like a "build-your-own salad" menu for your project.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Value to Enter</th><th>Why?</th></tr></thead>
+      <tbody>
+        <tr><td>Project</td><td>Maven</td><td>Build tool that manages dependencies</td></tr>
+        <tr><td>Language</td><td>Java</td><td>Our programming language</td></tr>
+        <tr><td>Spring Boot</td><td>Latest stable (e.g., 3.x.x)</td><td>No SNAPSHOT = stable release</td></tr>
+        <tr><td>Group</td><td><code>com.ecommerce</code></td><td>Your organization (reverse domain)</td></tr>
+        <tr><td>Artifact</td><td><code>microcommerce</code></td><td>The project name / JAR file name</td></tr>
+        <tr><td>Packaging</td><td>JAR</td><td>Autonomous deployment</td></tr>
+        <tr><td>Java</td><td>17 or 21</td><td>LTS version recommended</td></tr>
+        <tr><td>Dependency</td><td>Spring Web</td><td>REST + MVC + Tomcat</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🗂️ The Project Structure After Import</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">tree</span><span class="code-title">Project Structure</span></div>
+    <pre>src/
+├── main/
+│   ├── java/
+│   │   └── com.ecommerce.microcommerce/
+│   │       ├── <span class="ann">web/</span>                          <span class="cmt">← HTTP-facing code</span>
+│   │       │   └── <span class="ann">controller/</span>
+│   │       │       └── <span class="cls">ProductController.java</span>   <span class="cmt">← handles requests</span>
+│   │       ├── <span class="ann">model/</span>
+│   │       │   └── <span class="cls">Product.java</span>              <span class="cmt">← data structure</span>
+│   │       ├── <span class="ann">dao/</span>
+│   │       │   └── <span class="cls">ProductDao.java</span>           <span class="cmt">← data access</span>
+│   │       └── <span class="cls">MicrocommerceApplication.java</span>  <span class="cmt">← entry point</span>
+│   └── resources/
+│       └── application.properties              <span class="cmt">← configuration</span>
+└── test/                                       <span class="cmt">← unit tests</span></pre>
+  </div>
+
+  <h3>🔧 application.properties — The Config File</h3>
+  <p>This is where you customize your app's behavior without changing Java code.</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">properties</span><span class="code-title">application.properties</span></div>
+    <pre><span class="cmt"># Change the server port (default is 8080)</span>
+server.port=<span class="num">9090</span>
+
+<span class="cmt"># Show SQL queries generated by Hibernate (useful for debugging)</span>
+spring.jpa.show-sql=<span class="kw">true</span>
+
+<span class="cmt"># Configure H2 database console</span>
+spring.h2.console.enabled=<span class="kw">true</span>
+
+<span class="cmt"># Show full error messages in API responses (DEV only!)</span>
+server.error.include-message=always</pre>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 5 ======================= -->
+<div class="chapter" id="ch5">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 05</span>
+    <h2>REST APIs & HTTP Verbs — The Language of Microservices</h2>
+  </div>
+
+  <h3>🍽️ The Restaurant Analogy for REST</h3>
+  <p>Understanding an API with a restaurant analogy:</p>
+  <ul>
+    <li>👤 <strong>The Client (You)</strong> — You want to order food</li>
+    <li>🍳 <strong>The Kitchen (Database/Server)</strong> — Where the food is made, but you can't enter directly</li>
+    <li>🧑‍💼 <strong>The Waiter (REST API)</strong> — Takes your request, brings it to the kitchen, brings back your response</li>
+  </ul>
+
+  <div class="callout info">
+    <div class="callout-icon">📡</div>
+    <div class="callout-content">
+      <strong>REST Definition</strong>
+      REST (Representational State Transfer) is an architectural style that uses the HTTP protocol to transfer data between a client and a server. A REST API is a "window" that an application opens to let other programs communicate with it.
+    </div>
+  </div>
+
+  <h3>🔡 JSON — The Universal Language</h3>
+  <p>REST APIs don't return HTML pages. They return raw <strong>data in JSON format</strong>.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">json</span><span class="code-title">Example API Response</span></div>
+    <pre>{
+  <span class="str">"id"</span>: <span class="num">1</span>,
+  <span class="str">"nom"</span>: <span class="str">"Ordinateur Portable"</span>,
+  <span class="str">"prix"</span>: <span class="num">350</span>
+}</pre>
+  </div>
+
+  <p>JSON is lightweight, human-readable, and understood by every language (Java, Python, JavaScript, etc.).</p>
+
+  <h3>🔧 The 4 HTTP Verbs (Actions)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>HTTP Verb</th><th>Action</th><th>SQL Equivalent</th><th>Example URL</th></tr></thead>
+      <tbody>
+        <tr><td><span class="http http-get">GET</span></td><td>READ — Retrieve data</td><td>SELECT</td><td><code>GET /Produits</code> → get all products</td></tr>
+        <tr><td><span class="http http-post">POST</span></td><td>CREATE — Add new data</td><td>INSERT</td><td><code>POST /Produits</code> + JSON body → create product</td></tr>
+        <tr><td><span class="http http-put">PUT</span></td><td>UPDATE — Modify existing data</td><td>UPDATE</td><td><code>PUT /Produits/1</code> + JSON body → update product 1</td></tr>
+        <tr><td><span class="http http-delete">DELETE</span></td><td>DELETE — Remove data</td><td>DELETE</td><td><code>DELETE /Produits/1</code> → delete product 1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📍 URL Design for Our Products API</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Request</th><th>URL</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td><span class="http http-get">GET</span></td><td><code>/Produits</code></td><td>Returns list of ALL products</td></tr>
+        <tr><td><span class="http http-get">GET</span></td><td><code>/Produits/{id}</code></td><td>Returns ONE product by ID</td></tr>
+        <tr><td><span class="http http-post">POST</span></td><td><code>/Produits</code></td><td>Creates a new product (body = JSON)</td></tr>
+        <tr><td><span class="http http-put">PUT</span></td><td><code>/Produits/{id}</code></td><td>Updates product with given ID</td></tr>
+        <tr><td><span class="http http-delete">DELETE</span></td><td><code>/Produits/{id}</code></td><td>Deletes product with given ID</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 6 ======================= -->
+<div class="chapter" id="ch6">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 06</span>
+    <h2>Controllers & Returning JSON — The Code</h2>
+  </div>
+
+  <h3>📦 Step 1 — Create the Product Model</h3>
+  <p>A Model represents the data your microservice manages. In Java, it's a <strong>Plain Old Java Object (POJO)</strong> / <strong>JavaBean</strong>.</p>
+
+  <div class="callout info">
+    <div class="callout-icon">📏</div>
+    <div class="callout-content">
+      <strong>JavaBean Rules (Golden Rules of a Bean)</strong>
+      1. Private attributes (encapsulation) | 2. Public no-argument constructor | 3. Getters and Setters for each attribute | 4. (Optional) toString() method
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">Product.java (Model class)</span></div>
+    <pre><span class="kw">package</span> com.ecommerce.microcommerce.model;
+
+<span class="kw">public class</span> <span class="cls">Product</span> {
+
+    <span class="cmt">// RULE 1: Private attributes — protect the data</span>
+    <span class="kw">private int</span> id;
+    <span class="kw">private</span> <span class="cls">String</span> nom;     <span class="cmt">// "nom" = "name" in French</span>
+    <span class="kw">private int</span> prix;     <span class="cmt">// "prix" = "price" in French</span>
+
+    <span class="cmt">// RULE 2: No-argument constructor (required by Jackson for JSON)</span>
+    <span class="kw">public</span> <span class="fn">Product</span>() {}
+
+    <span class="cmt">// Constructor with all fields</span>
+    <span class="kw">public</span> <span class="fn">Product</span>(<span class="kw">int</span> id, <span class="cls">String</span> nom, <span class="kw">int</span> prix) {
+        <span class="kw">this</span>.id = id;
+        <span class="kw">this</span>.nom = nom;
+        <span class="kw">this</span>.prix = prix;
+    }
+
+    <span class="cmt">// RULE 3: Getters and Setters</span>
+    <span class="kw">public int</span> <span class="fn">getId</span>() { <span class="kw">return</span> id; }
+    <span class="kw">public void</span> <span class="fn">setId</span>(<span class="kw">int</span> id) { <span class="kw">this</span>.id = id; }
+
+    <span class="kw">public</span> <span class="cls">String</span> <span class="fn">getNom</span>() { <span class="kw">return</span> nom; }
+    <span class="kw">public void</span> <span class="fn">setNom</span>(<span class="cls">String</span> nom) { <span class="kw">this</span>.nom = nom; }
+
+    <span class="kw">public int</span> <span class="fn">getPrix</span>() { <span class="kw">return</span> prix; }
+    <span class="kw">public void</span> <span class="fn">setPrix</span>(<span class="kw">int</span> prix) { <span class="kw">this</span>.prix = prix; }
+
+    <span class="cmt">// RULE 4 (optional): toString for debugging</span>
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">String</span> <span class="fn">toString</span>() {
+        <span class="kw">return</span> <span class="str">"Product{"</span> + <span class="str">"id="</span> + id + <span class="str">", nom='"</span> + nom + <span class="str">", prix="</span> + prix + <span class="str">'}'</span>;
+    }
+}</pre>
+  </div>
+
+  <h3>🕹️ Step 2 — Create the REST Controller</h3>
+  <p>The Controller is the "brain" of your microservice. It listens for HTTP requests and sends back responses.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductController.java</span></div>
+    <pre><span class="kw">package</span> com.ecommerce.microcommerce.web.controller;
+
+<span class="kw">import</span> com.ecommerce.microcommerce.model.Product;
+
+<span class="ann">@RestController</span>  <span class="cmt">// = @Controller + @ResponseBody</span>
+<span class="cmt">// @Controller  → This class handles HTTP requests</span>
+<span class="cmt">// @ResponseBody → Send return value as JSON (not HTML)</span>
+<span class="kw">public class</span> <span class="cls">ProductController</span> {
+
+    <span class="cmt">// ✅ GET /Produits — Returns the list of all products</span>
+    <span class="ann">@GetMapping</span>(value = <span class="str">"/Produits"</span>)
+    <span class="kw">public</span> List&lt;<span class="cls">Product</span>&gt; <span class="fn">listeProduits</span>() {
+        <span class="cmt">// For now: return a hard-coded list. Later: use DAO</span>
+        <span class="kw">return</span> Arrays.<span class="fn">asList</span>(
+            <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">1</span>, <span class="str">"Ordinateur portable"</span>, <span class="num">350</span>),
+            <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">2</span>, <span class="str">"Aspirateur Robot"</span>, <span class="num">500</span>),
+            <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">3</span>, <span class="str">"Table de Ping Pong"</span>, <span class="num">750</span>)
+        );
+    }
+
+    <span class="cmt">// ✅ GET /Produits/{id} — Returns ONE product by its ID</span>
+    <span class="ann">@GetMapping</span>(value = <span class="str">"/Produits/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">afficherUnProduit</span>(<span class="ann">@PathVariable</span> <span class="kw">int</span> id) {
+        <span class="cmt">// {id} in URL → @PathVariable maps URL value to Java variable</span>
+        <span class="cmt">// Example: /Produits/42 → id = 42</span>
+        <span class="kw">return new</span> <span class="cls">Product</span>(id, <span class="str">"Aspirateur"</span>, <span class="num">100</span>);
+    }
+}</pre>
+  </div>
+
+  <h3>🔑 Key Annotations Explained</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Annotation</th><th>What it does</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><code>@RestController</code></td><td>Marks this class as a REST endpoint handler. All methods return JSON automatically.</td><td>On every controller class</td></tr>
+        <tr><td><code>@GetMapping("/path")</code></td><td>Maps this method to GET requests at the given path</td><td>For READ operations</td></tr>
+        <tr><td><code>@PostMapping("/path")</code></td><td>Maps this method to POST requests</td><td>For CREATE operations</td></tr>
+        <tr><td><code>@PutMapping("/path")</code></td><td>Maps this method to PUT requests</td><td>For UPDATE operations</td></tr>
+        <tr><td><code>@DeleteMapping("/path")</code></td><td>Maps this method to DELETE requests</td><td>For DELETE operations</td></tr>
+        <tr><td><code>@PathVariable</code></td><td>Extracts a value from the URL path</td><td>When URL has <code>{variable}</code></td></tr>
+        <tr><td><code>@RequestBody</code></td><td>Converts incoming JSON to a Java object</td><td>On POST/PUT methods</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>⚡ How JSON Conversion Works (The Jackson Magic)</h3>
+  <p>When your method returns a <code>Product</code> object, Spring Boot uses a library called <strong>Jackson</strong> to automatically convert it to JSON:</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-box purple">Product object</div>
+      <div class="flow-label">Java Object in memory</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box orange">Jackson reads Getters</div>
+      <div class="flow-label">getId() → "id": 1</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box blue">{ "id":1, "nom":"...", "prix":350 }</div>
+      <div class="flow-label">JSON string sent to client</div>
+    </div>
+  </div>
+
+  <p>The reverse also happens: Jackson reads incoming JSON and calls your Setters to populate a Java object (<strong>Deserialization</strong>).</p>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 6</h4>
+    <ul>
+      <li><code>@RestController</code> = marks a class as a REST handler. Automatically returns JSON.</li>
+      <li><code>@GetMapping</code>, <code>@PostMapping</code>, etc. = bind HTTP verbs to methods</li>
+      <li><code>@PathVariable</code> = extracts values from the URL (e.g., <code>/Produits/{id}</code>)</li>
+      <li>Jackson automatically converts Java objects ↔ JSON</li>
+      <li>The Model class (Product) must be a proper JavaBean for Jackson to work</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 7 ======================= -->
+<div class="chapter" id="ch7">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 07</span>
+    <h2>The DAO Pattern — Separating Data from Logic</h2>
+  </div>
+
+  <h3>🤔 What is a DAO?</h3>
+  <div class="callout info">
+    <div class="callout-icon">🗃️</div>
+    <div class="callout-content">
+      <strong>DAO = Data Access Object</strong>
+      It's a design pattern (a smart structural solution) that separates your data access logic from your business logic. Instead of the Controller directly accessing the database, it asks the DAO to do it.
+    </div>
+  </div>
+
+  <p><strong>Real-life analogy:</strong> You don't go to the library's storage room to find a book yourself. You ask the librarian (DAO). The librarian knows where everything is stored and retrieves it for you.</p>
+
+  <h3>📐 Why Use a DAO?</h3>
+  <ul>
+    <li><strong>Separation of concerns:</strong> Controller handles HTTP, DAO handles data storage</li>
+    <li><strong>Database independence:</strong> Switch from an ArrayList to MySQL by only changing the DAO</li>
+    <li><strong>Reusability:</strong> Multiple controllers can use the same DAO</li>
+    <li><strong>Testability:</strong> You can test the controller without a real database</li>
+  </ul>
+
+  <h3>📝 Step 1 — Define the Interface (The Contract)</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductDao.java (Interface)</span></div>
+    <pre><span class="kw">package</span> com.ecommerce.microcommerce.dao;
+
+<span class="kw">public interface</span> <span class="cls">ProductDao</span> {
+
+    <span class="cmt">// CONTRACT: Anyone who implements this interface MUST provide these methods</span>
+
+    List&lt;<span class="cls">Product</span>&gt; <span class="fn">findAll</span>();        <span class="cmt">// Returns all products</span>
+
+    <span class="cls">Product</span> <span class="fn">findById</span>(<span class="kw">int</span> id);       <span class="cmt">// Find one product by ID</span>
+
+    <span class="cls">Product</span> <span class="fn">save</span>(<span class="cls">Product</span> product); <span class="cmt">// Save (add or update) a product</span>
+}</pre>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">✨</div>
+    <div class="callout-content">
+      <strong>Why these specific method names?</strong>
+      <code>findAll</code>, <code>findById</code>, <code>save</code> are Spring standard naming conventions. Later, Spring Data JPA will automatically generate the SQL for these methods just by reading their names!
+    </div>
+  </div>
+
+  <h3>🔨 Step 2 — Implement the DAO (The Simulated Database)</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductDaoImpl.java</span></div>
+    <pre><span class="ann">@Repository</span>  <span class="cmt">// Tells Spring: "This class handles data access — create a Bean of it"</span>
+             <span class="cmt">// Spring also translates DB exceptions into Java exceptions</span>
+<span class="kw">public class</span> <span class="cls">ProductDaoImpl</span> <span class="kw">implements</span> <span class="cls">ProductDao</span> {
+
+    <span class="cmt">// static = this list is SHARED by ALL instances</span>
+    <span class="cmt">// If User A adds a product, User B sees it too (until server restarts)</span>
+    <span class="kw">private static</span> List&lt;<span class="cls">Product</span>&gt; products = <span class="kw">new</span> ArrayList&lt;&gt;(Arrays.<span class="fn">asList</span>(
+        <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">1</span>, <span class="str">"Ordinateur portable"</span>, <span class="num">350</span>),
+        <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">2</span>, <span class="str">"Aspirateur Robot"</span>, <span class="num">500</span>),
+        <span class="kw">new</span> <span class="cls">Product</span>(<span class="num">3</span>, <span class="str">"Table de Ping Pong"</span>, <span class="num">750</span>)
+    ));
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> List&lt;<span class="cls">Product</span>&gt; <span class="fn">findAll</span>() {
+        <span class="kw">return</span> products;  <span class="cmt">// Simply returns the full list</span>
+    }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">findById</span>(<span class="kw">int</span> id) {
+        <span class="kw">for</span> (<span class="cls">Product</span> p : products) {      <span class="cmt">// Loop through the list</span>
+            <span class="kw">if</span> (p.<span class="fn">getId</span>() == id) <span class="kw">return</span> p; <span class="cmt">// Return if ID matches</span>
+        }
+        <span class="kw">return null</span>;  <span class="cmt">// Not found → return null (we'll fix this later)</span>
+    }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">save</span>(<span class="cls">Product</span> product) {
+        products.<span class="fn">add</span>(product);  <span class="cmt">// Add the product to the list</span>
+        <span class="kw">return</span> product;          <span class="cmt">// Return the saved product</span>
+    }
+}</pre>
+  </div>
+
+  <h3>🔌 Step 3 — Inject the DAO into the Controller (Dependency Injection)</h3>
+  <div class="callout info">
+    <div class="callout-icon">💉</div>
+    <div class="callout-content">
+      <strong>Dependency Injection (DI)</strong>
+      Instead of creating objects yourself with <code>new ProductDaoImpl()</code>, you let Spring create them and give them to you automatically. This is "Inversion of Control" — Spring controls the object creation.
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductController.java — With DAO Injection</span></div>
+    <pre><span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="cls">ProductController</span> {
+
+    <span class="cmt">// final = once set in constructor, never changes (safe)</span>
+    <span class="kw">private final</span> <span class="cls">ProductDao</span> productDao;
+
+    <span class="cmt">// Constructor Injection — Spring sees this and automatically</span>
+    <span class="cmt">// provides the @Repository-annotated ProductDaoImpl instance</span>
+    <span class="kw">public</span> <span class="fn">ProductController</span>(<span class="cls">ProductDao</span> productDao) {
+        <span class="kw">this</span>.productDao = productDao;
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/Produits"</span>)
+    <span class="kw">public</span> List&lt;<span class="cls">Product</span>&gt; <span class="fn">listeProduits</span>() {
+        <span class="kw">return</span> productDao.<span class="fn">findAll</span>();  <span class="cmt">// Now uses the DAO!</span>
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/Produits/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">afficherUnProduit</span>(<span class="ann">@PathVariable</span> <span class="kw">int</span> id) {
+        <span class="kw">return</span> productDao.<span class="fn">findById</span>(id);
+    }
+
+    <span class="ann">@PostMapping</span>(<span class="str">"/Produits"</span>)
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">ajouterProduit</span>(<span class="ann">@RequestBody</span> <span class="cls">Product</span> product) {
+        <span class="cmt">// @RequestBody converts incoming JSON → Java Product object</span>
+        <span class="kw">return</span> productDao.<span class="fn">save</span>(product);
+    }
+}</pre>
+  </div>
+
+  <h3>📊 Full Request Flow</h3>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-box blue">Client Request</div>
+      <div class="flow-label">GET /Produits/2</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box orange">Controller</div>
+      <div class="flow-label">Receives request, calls DAO</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box purple">DAO</div>
+      <div class="flow-label">Finds data (list/DB)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box orange">Jackson</div>
+      <div class="flow-label">Converts Product → JSON</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box green">JSON Response</div>
+      <div class="flow-label">Sent back to client</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 8 ======================= -->
+<div class="chapter" id="ch8">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 08</span>
+    <h2>Testing with Postman</h2>
+  </div>
+
+  <h3>🤔 Why Not Just Use a Browser?</h3>
+  <p>Browsers can ONLY make <span class="http http-get">GET</span> requests automatically (when you type a URL). To test <span class="http http-post">POST</span>, <span class="http http-put">PUT</span>, and <span class="http http-delete">DELETE</span> with custom JSON bodies, you need Postman.</p>
+
+  <h3>📬 HTTP Status Codes — The Server's Reply Codes</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Code</th><th>Meaning</th><th>When you see it</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--accent2)">200 OK</strong></td><td>Success</td><td>GET returned data successfully</td></tr>
+        <tr><td><strong style="color:var(--accent2)">201 Created</strong></td><td>Resource was created</td><td>POST added a new product</td></tr>
+        <tr><td><strong style="color:var(--accent)">204 No Content</strong></td><td>Success but no body</td><td>DELETE was successful</td></tr>
+        <tr><td><strong style="color:var(--accent5)">400 Bad Request</strong></td><td>Wrong data format</td><td>JSON was malformed</td></tr>
+        <tr><td><strong style="color:var(--accent3)">404 Not Found</strong></td><td>Resource doesn't exist</td><td>Product ID not in database</td></tr>
+        <tr><td><strong style="color:var(--accent3)">500 Internal Error</strong></td><td>Server crashed</td><td>Java threw an uncaught exception</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📤 Testing POST in Postman (Step by Step)</h3>
+  <ol>
+    <li>Change the method dropdown from <code>GET</code> to <code>POST</code></li>
+    <li>Enter URL: <code>http://localhost:9090/Produits</code></li>
+    <li>Click the <strong>Body</strong> tab</li>
+    <li>Select <strong>raw</strong> → change type to <strong>JSON</strong></li>
+    <li>Paste this JSON:
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">json</span></div>
+        <pre>{ <span class="str">"id"</span>: <span class="num">4</span>, <span class="str">"nom"</span>: <span class="str">"iPhone 15"</span>, <span class="str">"prix"</span>: <span class="num">1200</span> }</pre>
+      </div>
+    </li>
+    <li>Click <strong>Send</strong> → You should get <strong>200 OK</strong> or <strong>201 Created</strong></li>
+    <li>Do a GET on <code>/Produits</code> to verify the new product appears!</li>
+  </ol>
+
+  <h3>📚 Postman Collections — Organize Your Tests</h3>
+  <p>Collections are folders that group and save related API requests. Use them to:</p>
+  <ul>
+    <li>Save your test requests permanently</li>
+    <li>Share them with teammates</li>
+    <li>Run them in sequence (Runner): POST to create → GET to verify → DELETE to cleanup</li>
+  </ul>
+
+  <div class="callout success">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Analyzing Response Headers</strong>
+      After a request, click the "Headers" tab in Postman. You'll see <code>Content-Type: application/json; charset=UTF-8</code> — this confirms your server is properly returning JSON data!
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 9 ======================= -->
+<div class="chapter" id="ch9">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 09</span>
+    <h2>JPA & Data Persistence — Making Data Survive Restarts</h2>
+  </div>
+
+  <h3>❓ Why Do We Need a Database?</h3>
+  <div class="callout danger">
+    <div class="callout-icon">💀</div>
+    <div class="callout-content">
+      <strong>The Amnesia Problem</strong>
+      Our ArrayList-based microservice is "amnesic." Every time you restart the server, ALL data disappears. Products added via POST? Gone. This is because RAM (memory) is volatile — it clears when the program stops.
+    </div>
+  </div>
+
+  <p>A <strong>database is like a filing cabinet</strong> outside of the microservice. Even if the microservice shuts down, the files (data) stay in the cabinet. When it restarts, it finds everything exactly as it left it.</p>
+
+  <h3>🤝 The Mismatch: Java Objects vs. SQL Tables</h3>
+  <p>Java and SQL speak different languages. This is called the <strong>Object-Relational Impedance Mismatch</strong>:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Issue</th><th>Java World</th><th>SQL World</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Naming Conventions</strong></td><td><code>targetDate</code> (camelCase)</td><td><code>target_date</code> (snake_case)</td></tr>
+        <tr><td><strong>Relationships</strong></td><td><code>List&lt;Employee&gt;</code> inside a class</td><td>Join tables with foreign keys</td></tr>
+        <tr><td><strong>Inheritance</strong></td><td><code>FullTimeEmployee extends Employee</code></td><td>Not natively supported — needs one flat table</td></tr>
+        <tr><td><strong>Data unit</strong></td><td>Objects with methods & behavior</td><td>Rows & columns — only data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔧 What is JPA (Java Persistence API)?</h3>
+  <div class="callout info">
+    <div class="callout-icon">📋</div>
+    <div class="callout-content">
+      <strong>JPA = A Specification (a set of rules)</strong>
+      JPA defines HOW Java should work with databases. It doesn't implement the work itself — it just defines the rules. The implementation is done by Hibernate.
+      <br><br>
+      Analogy: <strong>JPA = the traffic code (rules)</strong>, <strong>Hibernate = the car (the thing that actually drives)</strong>.
+    </div>
+  </div>
+
+  <h3>📊 The Persistence Technology Stack (History)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Technology</th><th>What you had to do</th><th>Pain level</th></tr></thead>
+      <tbody>
+        <tr><td><strong>JDBC (raw)</strong></td><td>Open connection manually, write SQL as strings, parse ResultSet row by row with <code>rs.getString("col")</code></td><td class="td-bad">😫 Very painful</td></tr>
+        <tr><td><strong>Spring JDBC Template</strong></td><td>Less boilerplate, but still writing raw SQL strings</td><td>😐 Better, but SQL is still manual</td></tr>
+        <tr><td><strong>MyBatis</strong></td><td>SQL in external XML files, objects auto-populated</td><td>🙂 Good, but 1000s of SQL files in large apps</td></tr>
+        <tr><td><strong>JPA + Hibernate</strong></td><td>Zero SQL — annotate your class, JPA generates queries</td><td class="td-good">😍 Developer-friendly</td></tr>
+        <tr><td><strong>Spring Data JPA</strong></td><td>Even less — just an interface, Spring generates everything</td><td class="td-good">🤩 Near-zero code</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🏷️ JPA Core Concepts</h3>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(88,166,255,0.15)">🗂️</div>
+      <h4>Entity — The Java Mirror of a SQL Table</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>An Entity is a Java class annotated with <code>@Entity</code>. It tells JPA: "This class represents a table in my database."</p>
+      <p>If the class is called <code>Product</code>, JPA creates/uses a table called <code>product</code>.</p>
+    </div>
+  </div>
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(63,185,80,0.15)">📋</div>
+      <h4>ORM — Object-Relational Mapping (The Translator)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p>ORM automatically translates between Java and SQL:</p>
+      <ul>
+        <li>1 Java class → 1 SQL table</li>
+        <li>1 Java object instance → 1 row in the table</li>
+        <li>1 Java attribute → 1 column in the table</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🏷️ Essential JPA Annotations</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">Product.java — JPA Entity</span></div>
+    <pre><span class="ann">@Entity</span>                  <span class="cmt">// "This class maps to a DB table"</span>
+<span class="ann">@Table</span>(name = <span class="str">"product"</span>) <span class="cmt">// Optional: specify exact table name</span>
+<span class="kw">public class</span> <span class="cls">Product</span> {
+
+    <span class="ann">@Id</span>                    <span class="cmt">// This field is the primary key</span>
+    <span class="ann">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+                           <span class="cmt">// Auto-increment the ID (1, 2, 3...)</span>
+    <span class="kw">private int</span> id;
+
+    <span class="ann">@Column</span>(name = <span class="str">"nom"</span>)  <span class="cmt">// Optional: maps to column "nom"</span>
+    <span class="ann">@Size</span>(min = <span class="num">3</span>)          <span class="cmt">// Validation: name must be at least 3 chars</span>
+    <span class="kw">private</span> <span class="cls">String</span> nom;
+
+    <span class="ann">@Min</span>(<span class="num">1</span>)                 <span class="cmt">// Validation: price must be at least 1</span>
+    <span class="kw">private int</span> prix;
+
+    <span class="cmt">// constructors, getters, setters...</span>
+}</pre>
+  </div>
+
+  <h3>⚡ The 4 EntityManager Operations</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Action</th><th>SQL Generated</th><th>Analogy</th></tr></thead>
+      <tbody>
+        <tr><td><code>persist(obj)</code></td><td>Insert new object</td><td><code>INSERT INTO ...</code></td><td>Adding a new contact to phonebook</td></tr>
+        <tr><td><code>merge(obj)</code></td><td>Update existing object</td><td><code>UPDATE ... SET ...</code></td><td>Editing a contact's number</td></tr>
+        <tr><td><code>remove(obj)</code></td><td>Delete object</td><td><code>DELETE FROM ...</code></td><td>Deleting a contact</td></tr>
+        <tr><td><code>find(class, id)</code></td><td>Find object by ID</td><td><code>SELECT * WHERE id=?</code></td><td>Searching contact by name</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 9</h4>
+    <ul>
+      <li>ArrayList data disappears on restart → need a real database</li>
+      <li>JPA = the specification (rules). Hibernate = the implementation (engine)</li>
+      <li>ORM = the translator: Java class ↔ SQL table, Java object ↔ SQL row</li>
+      <li><code>@Entity</code> = marks a class as a DB table, <code>@Id</code> = marks the primary key</li>
+      <li>H2 = a lightweight in-memory database, perfect for development/testing</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 10 ======================= -->
+<div class="chapter" id="ch10">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 10</span>
+    <h2>Spring Data JPA — Zero-Code Database Access</h2>
+  </div>
+
+  <h3>😅 The Problem with Raw JPA (EntityManager)</h3>
+  <p>If you have 50 Entity classes (Product, Order, Payment, User...) you'd need to write 50 DAO implementation classes, each with the same repetitive methods. That's hundreds of lines of copy-paste code.</p>
+
+  <h3>🚀 The Spring Data JPA Solution</h3>
+  <div class="callout success">
+    <div class="callout-icon">✨</div>
+    <div class="callout-content">
+      <strong>The Magic: Just extend JpaRepository</strong>
+      You don't write any implementation class. You just declare an interface that extends <code>JpaRepository</code>, and Spring generates ALL the SQL code automatically at startup!
+    </div>
+  </div>
+
+  <h3>🔑 The Persistence Pyramid</h3>
+  <div class="pyramid">
+    <div class="pyramid-layer" style="background:rgba(88,166,255,0.15);border:1px solid rgba(88,166,255,0.3);width:200px">
+      <span>Your Application</span>
+    </div>
+    <div class="pyramid-layer" style="background:rgba(63,185,80,0.12);border:1px solid rgba(63,185,80,0.3);width:260px">
+      <span>Spring Data JPA</span>
+      <span class="pyramid-label"> → interfaces (findAll, save...)</span>
+    </div>
+    <div class="pyramid-layer" style="background:rgba(210,168,255,0.12);border:1px solid rgba(210,168,255,0.3);width:320px">
+      <span>JPA</span>
+      <span class="pyramid-label"> → The standard rules</span>
+    </div>
+    <div class="pyramid-layer" style="background:rgba(255,166,87,0.12);border:1px solid rgba(255,166,87,0.3);width:380px">
+      <span>Hibernate</span>
+      <span class="pyramid-label"> → The engine that translates</span>
+    </div>
+    <div class="pyramid-layer" style="background:rgba(247,129,102,0.12);border:1px solid rgba(247,129,102,0.3);width:440px">
+      <span>JDBC</span>
+      <span class="pyramid-label"> → The physical pipe to the DB</span>
+    </div>
+    <div class="pyramid-layer" style="background:rgba(139,148,158,0.12);border:1px solid rgba(139,148,158,0.3);width:500px">
+      <span>Database (H2 / MySQL / PostgreSQL...)</span>
+    </div>
+  </div>
+
+  <h3>📝 Step 1 — Add Dependencies</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">xml</span><span class="code-title">pom.xml — Add these 2 dependencies</span></div>
+    <pre><span class="cmt">&lt;!-- Spring Data JPA + Hibernate --&gt;</span>
+&lt;<span class="kw">dependency</span>&gt;
+  &lt;<span class="kw">groupId</span>&gt;org.springframework.boot&lt;/<span class="kw">groupId</span>&gt;
+  &lt;<span class="kw">artifactId</span>&gt;spring-boot-starter-data-jpa&lt;/<span class="kw">artifactId</span>&gt;
+&lt;/<span class="kw">dependency</span>&gt;
+
+<span class="cmt">&lt;!-- H2 embedded database (for development/testing) --&gt;</span>
+&lt;<span class="kw">dependency</span>&gt;
+  &lt;<span class="kw">groupId</span>&gt;com.h2database&lt;/<span class="kw">groupId</span>&gt;
+  &lt;<span class="kw">artifactId</span>&gt;h2&lt;/<span class="kw">artifactId</span>&gt;
+  &lt;<span class="kw">scope</span>&gt;runtime&lt;/<span class="kw">scope</span>&gt;
+&lt;/<span class="kw">dependency</span>&gt;</pre>
+  </div>
+
+  <h3>📝 Step 2 — Update ProductDao (The Transformation)</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductDao.java — BEFORE (manual) vs AFTER (Spring Data JPA)</span></div>
+    <pre><span class="cmt">// ❌ BEFORE — You had to write this interface AND a full implementation class</span>
+<span class="kw">public interface</span> <span class="cls">ProductDao</span> {
+    List&lt;<span class="cls">Product</span>&gt; findAll();
+    <span class="cls">Product</span> findById(<span class="kw">int</span> id);
+    <span class="cls">Product</span> save(<span class="cls">Product</span> p);
+}
+<span class="cmt">// ...plus a ProductDaoImpl.java with 50+ lines of boilerplate</span>
+
+<span class="cmt">// ✅ AFTER — Spring Data JPA. Just this interface, ZERO implementation needed!</span>
+<span class="kw">public interface</span> <span class="cls">ProductDao</span> <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Product</span>, <span class="cls">Integer</span>&gt; {
+    <span class="cmt">//              ↑ Entity type    ↑ Type of the @Id field</span>
+    <span class="cmt">// You get findAll(), save(), deleteById(), count(), existsById() FOR FREE!</span>
+    <span class="cmt">// Spring generates a "Proxy" class with all implementations at startup</span>
+}</pre>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">🗑️</div>
+    <div class="callout-content">
+      <strong>Delete ProductDaoImpl.java!</strong>
+      Once you extend <code>JpaRepository</code>, your <code>ProductDaoImpl</code> implementation class is no longer needed — delete it entirely. Spring generates the implementation itself.
+    </div>
+  </div>
+
+  <h3>🎁 Free Methods from JpaRepository</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>What it does</th><th>SQL Generated</th></tr></thead>
+      <tbody>
+        <tr><td><code>findAll()</code></td><td>Get all products</td><td><code>SELECT * FROM product</code></td></tr>
+        <tr><td><code>findById(id)</code></td><td>Get one product by ID</td><td><code>SELECT * WHERE id=?</code></td></tr>
+        <tr><td><code>save(product)</code></td><td>Insert (if new) or Update (if ID exists)</td><td><code>INSERT</code> or <code>UPDATE</code></td></tr>
+        <tr><td><code>deleteById(id)</code></td><td>Delete a product</td><td><code>DELETE WHERE id=?</code></td></tr>
+        <tr><td><code>count()</code></td><td>Number of products</td><td><code>SELECT COUNT(*)</code></td></tr>
+        <tr><td><code>existsById(id)</code></td><td>Check if a product exists</td><td><code>SELECT COUNT(*) WHERE id=?</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🪄 Query Derivation from Method Names</h3>
+  <p>Spring Data JPA can generate SQL just from the <strong>name of the method</strong> you declare in the interface:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductDao.java — Method-name magic</span></div>
+    <pre><span class="kw">public interface</span> <span class="cls">ProductDao</span> <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Product</span>, <span class="cls">Integer</span>&gt; {
+
+    <span class="cmt">// Just declare this method name — Spring writes the SQL for you!</span>
+    List&lt;<span class="cls">Product</span>&gt; <span class="fn">findByPrixGreaterThan</span>(<span class="kw">int</span> prixLimit);
+    <span class="cmt">// ↑ Generated SQL: SELECT * FROM product WHERE prix > ?</span>
+    <span class="cmt">// breakdown: findBy=SELECT, Prix=column, GreaterThan=operator(>)</span>
+
+    List&lt;<span class="cls">Product</span>&gt; <span class="fn">findByNomContaining</span>(<span class="cls">String</span> keyword);
+    <span class="cmt">// Generated SQL: SELECT * FROM product WHERE nom LIKE '%keyword%'</span>
+
+    List&lt;<span class="cls">Product</span>&gt; <span class="fn">findByNomAndPrix</span>(<span class="cls">String</span> nom, <span class="kw">int</span> prix);
+    <span class="cmt">// Generated SQL: SELECT * FROM product WHERE nom=? AND prix=?</span>
+}</pre>
+  </div>
+
+  <h3>📝 Custom Queries with @Query (JPQL)</h3>
+  <p>For complex queries that don't fit method naming, use <code>@Query</code> with JPQL:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductDao.java — Custom @Query</span></div>
+    <pre><span class="ann">@Query</span>(<span class="str">"SELECT p FROM Product p WHERE p.prix &gt; :prixLimit"</span>)
+<span class="cmt">// ^ JPQL: uses Java CLASS names, not SQL table names!</span>
+<span class="cmt">// Product = Java class, not the "product" SQL table</span>
+List&lt;<span class="cls">Product</span>&gt; <span class="fn">findExpensiveProducts</span>(<span class="ann">@Param</span>(<span class="str">"prixLimit"</span>) <span class="kw">int</span> prix);
+<span class="cmt">//                               ↑ @Param bridges ":prixLimit" → Java variable "prix"</span></pre>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">📡</div>
+    <div class="callout-content">
+      <strong>JPQL vs SQL</strong>
+      JPQL (Java Persistence Query Language) is like SQL but targets Java classes instead of SQL tables. <code>FROM Product p</code> means "from the Product Java class". Hibernate then translates this to the correct SQL for your specific database (H2, MySQL, Oracle, etc.).
+    </div>
+  </div>
+
+  <h3>📊 The Full Execution Flow with Spring Data JPA</h3>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-box blue">HTTP Request</div>
+      <div class="flow-label">Client → GET /Produits</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box orange">Controller</div>
+      <div class="flow-label">calls productDao.findAll()</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box purple">Spring Proxy</div>
+      <div class="flow-label">Generated SQL SELECT</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box orange">Hibernate</div>
+      <div class="flow-label">Translates + executes</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box green">H2 Database</div>
+      <div class="flow-label">Returns rows</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box blue">Jackson → JSON</div>
+      <div class="flow-label">Sent to client</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 11 ======================= -->
+<div class="chapter" id="ch11">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 11</span>
+    <h2>3-Layer Architecture — The Professional Structure</h2>
+  </div>
+
+  <h3>🏗️ The 3 Tiers</h3>
+  <p>A well-structured Spring Boot application is organized into 3 layers, each with a specific responsibility:</p>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(88,166,255,0.15)">🌐</div>
+      <h4>Layer 1 — API Tier (Controllers)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Annotation:</strong> <code>@RestController</code></p>
+      <p><strong>Job:</strong> Listen for HTTP requests, convert JSON ↔ Java objects, validate input, delegate to Service layer.</p>
+      <p><strong>Golden rule:</strong> <em>A controller must contain ZERO business logic.</em> No price calculations, no discount rules — only HTTP handling.</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(63,185,80,0.15)">🧠</div>
+      <h4>Layer 2 — Service Tier (Business Logic)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Annotation:</strong> <code>@Service</code></p>
+      <p><strong>Job:</strong> Apply business rules (calculate VAT, check permissions, apply discounts). This layer is independent of HTTP — it can be reused by REST APIs, mobile apps, or scheduled tasks.</p>
+      <p><strong>Example:</strong> "Can this user delete this product?", "What is the total price with tax?"</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-card-header">
+      <div class="concept-icon" style="background:rgba(210,168,255,0.15)">💾</div>
+      <h4>Layer 3 — Persistence Tier (Repository + Entity)</h4>
+    </div>
+    <div class="concept-card-body">
+      <p><strong>Components:</strong> <code>@Entity</code> classes + <code>JpaRepository</code> interfaces</p>
+      <p><strong>Job:</strong> Bridge between Java and SQL. The Entity mirrors the DB table. The Repository performs CRUD operations.</p>
+    </div>
+  </div>
+
+  <h3>🎯 Why 3 Layers? The 3 Big Benefits</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Benefit</th><th>How it helps</th></tr></thead>
+      <tbody>
+        <tr><td class="td-good"><strong>Maintainability</strong></td><td>Change from H2 to MySQL? Only modify the Persistence layer. Zero changes in Controller or Service.</td></tr>
+        <tr><td class="td-good"><strong>Testability</strong></td><td>Test business logic (Service) without starting a web server or database (using Mocks).</td></tr>
+        <tr><td class="td-good"><strong>Reusability</strong></td><td>Multiple Controllers can share the same Service. Multiple Services can share the same Repository.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🔗 Complete CRUD Implementation</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductController.java — Full CRUD with Spring Data JPA</span></div>
+    <pre><span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="cls">ProductController</span> {
+
+    <span class="kw">private final</span> <span class="cls">ProductDao</span> productDao;  <span class="cmt">// Spring injects this</span>
+
+    <span class="kw">public</span> <span class="fn">ProductController</span>(<span class="cls">ProductDao</span> productDao) {
+        <span class="kw">this</span>.productDao = productDao;
+    }
+
+    <span class="cmt">// ✅ READ ALL</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/Produits"</span>)
+    <span class="kw">public</span> List&lt;<span class="cls">Product</span>&gt; <span class="fn">listeProduits</span>() {
+        <span class="kw">return</span> productDao.<span class="fn">findAll</span>();
+    }
+
+    <span class="cmt">// ✅ READ ONE — with error handling</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/Produits/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">afficherUnProduit</span>(<span class="ann">@PathVariable</span> <span class="kw">int</span> id) {
+        <span class="cls">Product</span> p = productDao.<span class="fn">findById</span>(id).<span class="fn">orElse</span>(<span class="kw">null</span>);
+        <span class="kw">if</span> (p == <span class="kw">null</span>) <span class="kw">throw new</span> <span class="cls">ProduitIntrouvableException</span>(<span class="str">"Produit introuvable: "</span> + id);
+        <span class="kw">return</span> p;
+    }
+
+    <span class="cmt">// ✅ CREATE</span>
+    <span class="ann">@PostMapping</span>(<span class="str">"/Produits"</span>)
+    <span class="ann">@ResponseStatus</span>(HttpStatus.CREATED)  <span class="cmt">// Return 201 instead of 200</span>
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">ajouterProduit</span>(<span class="ann">@Valid</span> <span class="ann">@RequestBody</span> <span class="cls">Product</span> product) {
+        <span class="cmt">// @Valid triggers validation annotations (@Size, @Min) in Product</span>
+        <span class="cmt">// If invalid: Spring returns 400 Bad Request automatically</span>
+        <span class="kw">return</span> productDao.<span class="fn">save</span>(product);  <span class="cmt">// INSERT INTO product...</span>
+    }
+
+    <span class="cmt">// ✅ UPDATE</span>
+    <span class="ann">@PutMapping</span>(<span class="str">"/Produits"</span>)
+    <span class="kw">public</span> <span class="cls">Product</span> <span class="fn">updateProduit</span>(<span class="ann">@RequestBody</span> <span class="cls">Product</span> product) {
+        <span class="cmt">// .save() with an existing ID = UPDATE (not INSERT)</span>
+        <span class="kw">return</span> productDao.<span class="fn">save</span>(product);
+    }
+
+    <span class="cmt">// ✅ DELETE</span>
+    <span class="ann">@DeleteMapping</span>(<span class="str">"/Produits/{id}"</span>)
+    <span class="kw">public void</span> <span class="fn">supprimerProduit</span>(<span class="ann">@PathVariable</span> <span class="kw">int</span> id) {
+        productDao.<span class="fn">deleteById</span>(id);  <span class="cmt">// DELETE FROM product WHERE id=?</span>
+    }
+}</pre>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= CHAPTER 12 ======================= -->
+<div class="chapter" id="ch12">
+  <div class="chapter-header">
+    <span class="chapter-num">PART 12</span>
+    <h2>Error Handling & Validation</h2>
+  </div>
+
+  <h3>🐛 The Problem: Lying API</h3>
+  <p>If a client requests <code>GET /Produits/999</code> and product 999 doesn't exist, our API currently returns <strong>200 OK with an empty body</strong>. This is wrong! 200 means "success" — but nothing was found. The API is lying.</p>
+
+  <h3>🏗️ Step 1 — Create a Custom Exception</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProduitIntrouvableException.java</span></div>
+    <pre><span class="kw">package</span> com.ecommerce.microcommerce.web.exceptions;
+
+<span class="ann">@ResponseStatus</span>(HttpStatus.NOT_FOUND)  <span class="cmt">// Maps this exception → HTTP 404</span>
+<span class="kw">public class</span> <span class="cls">ProduitIntrouvableException</span> <span class="kw">extends</span> <span class="cls">RuntimeException</span> {
+    <span class="cmt">// RuntimeException = error that happens during execution</span>
+
+    <span class="kw">public</span> <span class="fn">ProduitIntrouvableException</span>(<span class="cls">String</span> message) {
+        <span class="kw">super</span>(message);  <span class="cmt">// Pass the message to the parent class</span>
+        <span class="cmt">// Spring captures this and puts it in the error response</span>
+    }
+}</pre>
+  </div>
+
+  <h3>🔒 Step 2 — Add Validation Rules to the Model</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">Product.java — With Validation</span></div>
+    <pre><span class="cmt">// First add to pom.xml:</span>
+<span class="cmt">// &lt;artifactId&gt;spring-boot-starter-validation&lt;/artifactId&gt;</span>
+
+<span class="ann">@Entity</span>
+<span class="kw">public class</span> <span class="cls">Product</span> {
+
+    <span class="ann">@Id</span>
+    <span class="ann">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+    <span class="kw">private int</span> id;
+
+    <span class="ann">@Size</span>(min = <span class="num">3</span>, message = <span class="str">"Le nom doit avoir au moins 3 caractères"</span>)
+    <span class="cmt">// ^ If name has less than 3 chars: reject the request</span>
+    <span class="kw">private</span> <span class="cls">String</span> nom;
+
+    <span class="ann">@Min</span>(value = <span class="num">1</span>, message = <span class="str">"Le prix doit être supérieur à 0"</span>)
+    <span class="cmt">// ^ If price is 0 or negative: reject the request</span>
+    <span class="kw">private int</span> prix;
+}</pre>
+  </div>
+
+  <h3>✅ Step 3 — Activate Validation in the Controller</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">java</span><span class="code-title">ProductController.java — @Valid activates the rules</span></div>
+    <pre><span class="ann">@PostMapping</span>(<span class="str">"/Produits"</span>)
+<span class="ann">@ResponseStatus</span>(HttpStatus.CREATED)
+<span class="kw">public</span> <span class="cls">Product</span> <span class="fn">ajouterProduit</span>(
+    <span class="ann">@Valid</span>        <span class="cmt">// ← This triggers the @Size and @Min checks!</span>
+    <span class="ann">@RequestBody</span> <span class="cls">Product</span> product
+) {
+    <span class="cmt">// If @Valid fails: Spring automatically returns 400 Bad Request</span>
+    <span class="cmt">// with details about which field failed which rule</span>
+    <span class="kw">return</span> productDao.<span class="fn">save</span>(product);
+}</pre>
+  </div>
+
+  <h3>📋 Best Practices for Error Handling</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Situation</th><th>Correct HTTP Code</th><th>Explanation</th></tr></thead>
+      <tbody>
+        <tr><td>Resource not found (ID doesn't exist)</td><td class="td-bad"><strong>404 Not Found</strong></td><td>Don't return 200 with empty body!</td></tr>
+        <tr><td>Invalid input (name too short, price negative)</td><td><strong>400 Bad Request</strong></td><td>The client sent wrong data</td></tr>
+        <tr><td>Resource successfully created</td><td class="td-good"><strong>201 Created</strong></td><td>More precise than 200 for POST</td></tr>
+        <tr><td>Real server crash / uncaught exception</td><td class="td-bad"><strong>500 Internal Error</strong></td><td>Only for actual bugs in your code</td></tr>
+        <tr><td>Everything OK, returning data</td><td class="td-good"><strong>200 OK</strong></td><td>Standard success for GET, PUT, DELETE</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">🔐</div>
+    <div class="callout-content">
+      <strong>Security: Message Visibility</strong>
+      In development: add <code>server.error.include-message=always</code> to see error messages.
+      In production: <strong>REMOVE THIS</strong> — detailed error messages help hackers understand your system's weaknesses.
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>🔖 Key Points — Chapter 12</h4>
+    <ul>
+      <li>Never return 200 OK when a resource doesn't exist — use 404</li>
+      <li>Reserve 500 for actual code crashes, not missing data</li>
+      <li><code>@ResponseStatus</code> on an exception class links it to an HTTP code</li>
+      <li><code>@Valid</code> activates validation rules defined in the model</li>
+      <li>Validation rules: <code>@Size</code>, <code>@Min</code>, <code>@NotNull</code>, <code>@Email</code>, etc.</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======================= EXAM SECTION ======================= -->
+<div class="exam-section" id="exam">
+  <div class="exam-header">
+    <div>
+      <div style="font-size:28px;margin-bottom:4px">📝</div>
+      <h2>Exam Practice — Test Your Knowledge</h2>
+      <p style="color:var(--muted);font-size:13px;margin-top:4px">Multiple choice, definitions, and coding exercises</p>
+    </div>
+  </div>
+  <div class="exam-body">
+
+    <h3 style="color:var(--accent4);margin-bottom:20px">Part A — Multiple Choice Questions</h3>
+
+    <div class="question">
+      <div class="question-num">Question 01</div>
+      <p>What is the main disadvantage of a monolithic architecture for large systems?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) It is too simple to build</li>
+        <li onclick="selectAnswer(this, true)">B) Scaling one feature requires scaling the entire application</li>
+        <li onclick="selectAnswer(this, false)">C) It always needs a separate web server</li>
+        <li onclick="selectAnswer(this, false)">D) It can only be written in Python</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: B — In a monolith, if Feature A gets heavy traffic, you must duplicate the ENTIRE application, even Features B and C that don't need scaling. Microservices solve this by letting you scale individual services.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 02</div>
+      <p>What does <code>@RestController</code> actually combine?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) @Service + @Repository</li>
+        <li onclick="selectAnswer(this, true)">B) @Controller + @ResponseBody</li>
+        <li onclick="selectAnswer(this, false)">C) @Entity + @Table</li>
+        <li onclick="selectAnswer(this, false)">D) @Component + @Configuration</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: B — @Controller enables request handling, @ResponseBody tells Spring to serialize return values directly as JSON (instead of looking for a view template).</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 03</div>
+      <p>Which annotation do you use to extract a value from the URL path (e.g., from <code>/Produits/42</code>)?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) @RequestParam</li>
+        <li onclick="selectAnswer(this, false)">B) @RequestBody</li>
+        <li onclick="selectAnswer(this, true)">C) @PathVariable</li>
+        <li onclick="selectAnswer(this, false)">D) @RequestHeader</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: C — @PathVariable maps a URL template variable like {id} to a Java method parameter.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 04</div>
+      <p>What is the role of Jackson in Spring Boot?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, true)">A) Automatically converts Java objects to JSON (and back)</li>
+        <li onclick="selectAnswer(this, false)">B) It is the embedded web server</li>
+        <li onclick="selectAnswer(this, false)">C) It manages the database connection</li>
+        <li onclick="selectAnswer(this, false)">D) It handles HTTP routing</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: A — Jackson is a serialization/deserialization library. It reads Java object Getters to produce JSON, and calls Setters when parsing incoming JSON.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 05</div>
+      <p>In Spring Data JPA, if you call <code>productDao.save(product)</code> with an existing ID, what happens?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) Throws a DuplicateKeyException</li>
+        <li onclick="selectAnswer(this, false)">B) Creates a new product with a new ID</li>
+        <li onclick="selectAnswer(this, true)">C) Updates the existing product (generates UPDATE SQL)</li>
+        <li onclick="selectAnswer(this, false)">D) Deletes the old product and inserts a new one</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: C — Spring Data JPA's .save() is smart. If the ID already exists in the DB, it generates an UPDATE. If the ID is new or null, it generates an INSERT.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 06</div>
+      <p>What HTTP status code should you return when a product is not found in the database?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) 200 OK with an empty body</li>
+        <li onclick="selectAnswer(this, false)">B) 500 Internal Server Error</li>
+        <li onclick="selectAnswer(this, true)">C) 404 Not Found</li>
+        <li onclick="selectAnswer(this, false)">D) 204 No Content</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: C — 404 Not Found is the standard HTTP code for "the resource you requested doesn't exist." 500 is only for real server crashes. 200 with empty body is actively misleading!</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 07</div>
+      <p>What is the relationship between JPA and Hibernate?</p>
+      <ul class="options">
+        <li onclick="selectAnswer(this, false)">A) JPA is an implementation of Hibernate</li>
+        <li onclick="selectAnswer(this, true)">B) JPA is the specification (rules), Hibernate is one implementation of those rules</li>
+        <li onclick="selectAnswer(this, false)">C) They are the same thing with different names</li>
+        <li onclick="selectAnswer(this, false)">D) Hibernate is the replacement for JPA</li>
+      </ul>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Explanation</button>
+      <div class="answer-reveal">✅ Correct: B — JPA defines the API and annotations (@Entity, @Id...). Hibernate provides the actual engine that reads those annotations and generates SQL. Analogy: JPA = traffic code, Hibernate = the car.</div>
+    </div>
+
+    <h3 style="color:var(--accent4);margin: 32px 0 20px">Part B — Short Answer</h3>
+
+    <div class="question">
+      <div class="question-num">Question 08 — Define</div>
+      <p>In your own words, what is the "Database per Service" rule in microservices?</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Model Answer</button>
+      <div class="answer-reveal">Each microservice must own its private database. No other service can directly access it. Services can only communicate through their APIs. This ensures true independence — if Service A's DB schema changes, Service B is completely unaffected.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 09 — Explain</div>
+      <p>Explain the difference between <code>@RequestBody</code> and <code>@PathVariable</code>. When do you use each?</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Model Answer</button>
+      <div class="answer-reveal">
+        @PathVariable extracts a value from the URL path itself. Example: /Produits/{id} → @PathVariable int id extracts "42" from /Produits/42.
+        @RequestBody reads the entire JSON body of the request and converts it to a Java object. Example: POST /Produits sends JSON in the body → @RequestBody Product product creates a Product Java object from that JSON.
+        Rule: Use @PathVariable for resource identification in the URL. Use @RequestBody when you're sending a complete data object (for creation/update).
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 10 — Trace</div>
+      <p>Trace the full execution path when a client sends <code>POST /Produits</code> with JSON <code>{"nom":"iPad","prix":800}</code>.</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Model Answer</button>
+      <div class="answer-reveal">
+        1. Client sends POST HTTP request with JSON body to /Produits
+        2. Spring's Dispatcher Servlet receives the request and routes it to ProductController.ajouterProduit()
+        3. @RequestBody triggers Jackson to deserialize JSON → calls setNom("iPad") and setPrix(800) on a new Product object
+        4. @Valid checks the annotations in Product class (@Size, @Min) — if they fail, 400 is returned immediately
+        5. productDao.save(product) is called
+        6. Spring Data JPA Proxy generates INSERT INTO product (nom, prix) VALUES ('iPad', 800)
+        7. Hibernate executes the SQL against H2 database
+        8. The new product (with auto-generated ID) is returned
+        9. Jackson serializes the Product object to JSON
+        10. Spring sends 201 Created response with the JSON body to the client
+      </div>
+    </div>
+
+    <h3 style="color:var(--accent4);margin: 32px 0 20px">Part C — Coding Exercises</h3>
+
+    <div class="question">
+      <div class="question-num">Exercise 01</div>
+      <p>Write the <code>ProductDao</code> interface that extends <code>JpaRepository</code> and includes a custom method to find all products with a price LESS than a given limit.</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Solution</button>
+      <div class="answer-reveal">
+        <pre style="background:#0d1117;padding:14px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;overflow-x:auto">public interface ProductDao extends JpaRepository&lt;Product, Integer&gt; {
+    // Method name derivation: Spring generates:
+    // SELECT * FROM product WHERE prix &lt; ?
+    List&lt;Product&gt; findByPrixLessThan(int prixMax);
+}</pre>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Exercise 02</div>
+      <p>Write a custom exception class called <code>ProduitIntrouvableException</code> that causes Spring to return HTTP 404, with a custom error message.</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Solution</button>
+      <div class="answer-reveal">
+        <pre style="background:#0d1117;padding:14px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;overflow-x:auto">@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ProduitIntrouvableException extends RuntimeException {
+    public ProduitIntrouvableException(String message) {
+        super(message);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Exercise 03</div>
+      <p>Add the correct validation annotations to a <code>Product</code> class so that: (1) the name must be at least 3 characters, (2) the price must be at least 1, (3) the name cannot be null.</p>
+      <button class="show-answer-btn" onclick="toggleAnswer(this)">Show Solution</button>
+      <div class="answer-reveal">
+        <pre style="background:#0d1117;padding:14px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;overflow-x:auto">@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @NotNull(message = "Le nom ne peut pas être null")
+    @Size(min = 3, message = "Le nom doit avoir au moins 3 caractères")
+    private String nom;
+
+    @Min(value = 1, message = "Le prix doit être d'au moins 1")
+    private int prix;
+
+    // constructors, getters, setters...
+}</pre>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>📚 Microservices with Spring Boot — Complete Lecture Notes</p>
+  <p style="margin-top:6px">Prof. Chemlal Yman · Parts 1–7 · Spring Boot 3.x · Java 17</p>
+</footer>
+
+<script src="script.js">
+
+</script>
+</body>
+</html>
